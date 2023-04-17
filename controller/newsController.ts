@@ -41,6 +41,17 @@ class NewsController {
     }
   }
 
+  search(req, res) {
+    const term = req.params.term;
+
+    const page = req.param("page") ? parseInt(req.param("page")) : 1;
+    const perPage = req.param("limit") ? parseInt(req.param("limit")) : 10;
+
+    NewsService.search(term, page, perPage)
+      .then((news) => Helper.sendResponse(res, HttpStatus.OK, news))
+      .catch((error) => console.error.bind(console, `Error ${error}`));
+  }
+
   async create(req, res) {
     try {
       let vm = req.body;

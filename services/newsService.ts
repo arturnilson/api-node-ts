@@ -1,8 +1,25 @@
 import NewsRepository from "../repository/newsRepository";
 
 class NewsService {
-  async get() {
-    let result = await NewsRepository.find({});
+  search(term, page, perPage) {
+    return NewsRepository.find({
+      title: new RegExp(".*" + term + "*.", "i"),
+      active: true,
+    })
+      .skip(page - 1 * perPage)
+      .limit(perPage);
+  }
+
+  get() {
+    let startDate = new Date("2019-01-01T00:00:00.000Z");
+    let endDate = new Date("2019-03-01T00:00:00.000Z");
+
+    let result = NewsRepository.find(
+      { active: true, publishDate: { $gt: startDate, $lt: endDate } },
+      "title hat img" // title hat img: retorno da query
+    )
+      .sort({ publishDate: -1 })
+      .limit(2);
     return result;
   }
 
